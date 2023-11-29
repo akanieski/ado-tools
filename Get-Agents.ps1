@@ -63,6 +63,7 @@ foreach ($orgName in $orgList) {
             $agentDetails = Invoke-RestMethod -Uri "$($agent._links.self.href)?includeCapabilities=true&includeLastCompletedRequest=true" -Method Get -ContentType "application/json" -Headers $headers
             
             $agentObject = [PSCustomObject]@{
+                'OrgName' = $orgName
                 'AgentName' = $agentDetails.name
                 'AgentPool' = $pool.name
                 'AgentStatus' = $agentDetails.status

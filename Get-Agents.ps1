@@ -22,7 +22,10 @@ param(
     # The $capabilities parameter is a comma-separated list of capabilities that the script will query for each agent.
     # This parameter is optional and the script will prompt for it if it's not provided.
     [Parameter(Mandatory=$false)]
-    [string]$capabilities = (Read-Host -Prompt 'Input your capabilities (comma separated list)')
+    [string]$capabilities = (Read-Host -Prompt 'Input your capabilities (comma separated list)'),
+
+    [Parameter(Mandatory=$false)]
+    [switch]$append = $false
 )
 
 # 1. First we prompt the user for the organizations they want to query, the PAT, and the capabilities they want to query.
@@ -89,4 +92,13 @@ foreach ($orgName in $orgList) {
 }
 
 Write-Host "Total Agents: $($agents.Count)"
-$agents | ConvertTo-Csv  -NoTypeInformation | Out-File -FilePath $outputPath
+
+
+$csvContent = $agents | ConvertTo-Csv  -NoTypeInformation
+$lines = $csvContent -split "`n"
+
+if ($append) {
+    $lines | Select-Object -Skip 1 | Add-Content -Path $outputPath
+} else {
+    Set-Content -Path $outputPath -Value $csvContent
+}

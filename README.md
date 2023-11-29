@@ -7,6 +7,14 @@ Currently, the repository includes the following tools:
 ### `Get-Agents`
 This script queries Azure DevOps for agent details across multiple organizations.
 
+| Parameter        | Description                                                                                           | Mandatory | Default Value       |
+|------------------|-------------------------------------------------------------------------------------------------------|-----------|---------------------|
+| `organizations`  | A comma-separated list of organization names that the script will query for agents.                   | Yes       | None                |
+| `pat`            | The Personal Access Token (PAT) used for authentication with the Azure DevOps REST API.               | Yes       | None                |
+| `hostingBasePath`| The base URL for the Azure DevOps instance.                                                           | No        | "https://dev.azure.com" |
+| `outputPath`     | The file path where the script will output the CSV file with the agent details.                       | No        | "agents.csv"        |
+| `capabilities`   | A comma-separated list of capabilities that the script will query for each agent.                     | No        | None                |
+
 ```
 .\Get-Agents.ps1 `
   -organizations "org1,org2,org3" `
@@ -16,14 +24,27 @@ This script queries Azure DevOps for agent details across multiple organizations
   -capabilities "Agent.ComputerName,NUMBER_OF_CORES"
 ```
 
+### `Add-PipelineTag`
+This script adds a tag to a specific Azure DevOps pipeline.
+
 | Parameter        | Description                                                                                           | Mandatory | Default Value       |
 |------------------|-------------------------------------------------------------------------------------------------------|-----------|---------------------|
-| `organizations`  | A comma-separated list of organization names that the script will query for agents.                   | Yes       | None                |
+| `orgName`        | The name of the organization that contains the pipeline.                                              | Yes       | None                |
 | `pat`            | The Personal Access Token (PAT) used for authentication with the Azure DevOps REST API.               | Yes       | None                |
-| `hostingBasePath`| The base URL for the Azure DevOps instance.                                                           | No        | "https://dev.azure.com" |
-| `outputPath`     | The file path where the script will output the CSV file with the agent details.                       | No        | "agents.csv"        |
-| `capabilities`   | A comma-separated list of capabilities that the script will query for each agent.                     | No        | None                |
+| `projectName`    | The name of the project that contains the pipeline.                                                   | Yes       | None                |
+| `pipelinePath`   | The path to the pipeline within the project.                                                          | Yes       | None                |
+| `pipelineName`   | The name of the pipeline to which the tag will be added.                                              | Yes       | None                |
+| `tag`            | The tag that will be added to the pipeline.                                                           | Yes       | None                |
 
+```
+.\Add-PipelineTag.ps1 `
+  -orgName "yourOrg" `
+  -pat "yourPAT" `
+  -projectName "yourProject" `
+  -pipelinePath "yourPath" `
+  -pipelineName "yourPipeline" `
+  -tag "yourTag"
+```
 ## Usage
 
 Each script in the repository is a standalone PowerShell script. To run a script, open a PowerShell terminal, navigate to the directory containing the script, and run it. Each script includes detailed comments explaining its parameters and functionality.

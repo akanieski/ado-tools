@@ -24,7 +24,7 @@ param(
     [Parameter(Mandatory=$false)]
     [string]$capabilities = (Read-Host -Prompt 'Input your capabilities (comma separated list)')
 )
-#
+
 # 1. First we prompt the user for the organizations they want to query, the PAT, and the capabilities they want to query.
 # 2. Then we go through each organization the user input and query the agent pools.
 # 3. For each agent pool, we query the agents.

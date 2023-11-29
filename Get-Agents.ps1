@@ -69,6 +69,9 @@ foreach ($orgName in $orgList) {
                 'AgentStatus' = $agentDetails.status
                 'AgentVersion' = $agentDetails.version
                 "LastActivity" = if ($agentDetails.lastCompletedRequest) { $agentDetails.lastCompletedRequest.finishTime } else { $null }
+                "LastPipelineName" = $agentDetails.lastCompletedRequest.definition.name
+                "LastPipelineId" = $agentDetails.lastCompletedRequest.definition.id
+                "LastPipelineLink" = $agentDetails.lastCompletedRequest.definition._links.web.href
             }
             if ($capabilities) {
                 $capabilitiesList = $capabilities.Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)

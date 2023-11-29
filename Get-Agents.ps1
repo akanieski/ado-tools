@@ -38,6 +38,7 @@ param(
 $hostingBasePath = $hostingBasePath.TrimEnd('/')
 $orgList = $organizations.Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
 
+$agents = @()
 foreach ($orgName in $orgList) {
     # Define the Azure DevOps organization URL, PAT, and API version
     $organizationUrl = "$hostingBasePath/$orgName"
@@ -51,7 +52,6 @@ foreach ($orgName in $orgList) {
     $agentPoolsUrl = "$organizationUrl/_apis/distributedtask/pools"
     $agentPoolsResponse = Invoke-RestMethod -Uri $agentPoolsUrl -Method Get -ContentType "application/json" -Headers $headers
 
-    $agents = @()
     # For each agent pool, send another GET request to get all agents in that pool
     foreach($pool in $agentPoolsResponse.value) {
         if ($pool.isHosted) {

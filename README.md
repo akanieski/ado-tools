@@ -45,6 +45,24 @@ This script adds a tag to a specific Azure DevOps pipeline.
   -pipelineName "yourPipeline" `
   -tag "yourTag"
 ```
+
+### Get-PipelinesTasksReport
+This PowerShell script fetches the list of pipelines from an Azure DevOps organization and generates a report in CSV format.
+
+## Parameters
+
+
+| Parameter        | Description                                                                                           | Mandatory | Default Value       |
+|------------------|-------------------------------------------------------------------------------------------------------|-----------|---------------------|
+| `orgName`        | The organization url                                                                                  | Yes       | None                |
+| `pat`            | The Personal Access Token (PAT) used for authentication with the Azure DevOps REST API.               | Yes       | None                |
+
+## Usage
+
+```powershell
+.\Get-PipelinesTasksReport.ps1 -OrganizationUrl "https://dev.azure.com/myorg" -PAT "mypat"
+```
+
 ## Usage
 
 Each script in the repository is a standalone PowerShell script. To run a script, open a PowerShell terminal, navigate to the directory containing the script, and run it. Each script includes detailed comments explaining its parameters and functionality.

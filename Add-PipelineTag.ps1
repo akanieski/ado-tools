@@ -21,10 +21,13 @@ param(
     [string]$pipelinePath = (Read-Host -Prompt 'Input your pipeline path'),
 
     [Parameter(Mandatory=$false)]
-    [string]$pipelineName = (Read-Host -Prompt 'Input your pipeline name'),
+    [string]$pipelineName,
 
     [Parameter(Mandatory=$false)]
-    [string]$tag = (Read-Host -Prompt 'Input your desired tag')
+    [string]$tag = (Read-Host -Prompt 'Input your desired tag'),
+
+    [Parameter(Mandatory=$false)]
+    [switch]$force
 )
 
 # Ensure $hostingBasePath does not end with a "/"
@@ -50,6 +53,13 @@ $headers = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
 $pipelinesUrl = "$organizationUrl/$projectName/_apis/build/definitions?path=$pipelinePath&name=$pipelineName"
 
 $pipelinesResponse = Invoke-RestMethod -Uri $pipelinesUrl -Method Get -ContentType "application/json" -Headers $headers
+
+if ($false -eq $force) {
+    $confirm = Read-Host -Prompt "Are you sure you want to tag $($pipelinesResponse.count) pipelines with tag [$tag]? (y/n)"
+    if ($confirm -ne "y") {
+        exit
+    }
+}
 
 foreach ($pipeline in $pipelinesResponse.value) {
     

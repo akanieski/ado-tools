@@ -18,13 +18,16 @@ param(
     # This parameter is optional and defaults to "agent-pool-usage.csv" if not provided.
     [Parameter(Mandatory=$false)]
     [string]$outputDirectory = "./",
-
+    
+    # The start date for fetching the agent pool usage. If not provided, the script will prompt for it.
     [Parameter(Mandatory=$false)]
     [string]$startDate = (Read-Host -Prompt 'Input your start date (yyyy-MM-dd)'),
-
+    
+    # If this switch is provided, the script will append the results to the existing output file instead of overwriting it.
     [Parameter(Mandatory=$false)]
     [switch]$append = $false,
     
+    # The name of the tag for which the agent pool usage will be fetched.
     [Parameter(Mandatory=$true)]
     [string]$tagName
 )

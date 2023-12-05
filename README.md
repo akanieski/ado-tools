@@ -4,6 +4,7 @@ This repository contains a collection of PowerShell scripts for managing Azure D
 
 Currently, the repository includes the following tools:
 ## Functions
+
 ### `Get-Agents`
 This script queries Azure DevOps for agent details across multiple organizations.
 
@@ -22,6 +23,38 @@ This script queries Azure DevOps for agent details across multiple organizations
   -hostingBasePath "https://dev.azure.com" `
   -outputPath "agents.csv" `
   -capabilities "Agent.ComputerName,NUMBER_OF_CORES"
+```
+#### Results - Summary
+| Org          | Pool            | Tag                 | TotalSeconds | StartDate  |
+|--------------|-----------------|---------------------|--------------|------------|
+| my-org       | Azure Pipelines | WebOpsCostCenter    | 361.3697018  | 2023-09-01 |
+| my-org       | Azure Pipelines | No Tags             | 1103.4578506 | 2023-09-01 |
+| my-org       | Azure Pipelines | SomeProjectLevelTag | 113.6678142  | 2023-09-01 |
+| my-org       | Azure Pipelines | SomeTeam            | 23.1124736   | 2023-09-01 |
+| my-org       | My Agents       | SomeTeam            | 56.9592669   | 2023-09-01 |
+
+### `Get-AgentPoolUsage`
+This script assesses agent pool usage, collecting the time spent by each job request against the pool and grouping that time based on what tags are present 
+first on the pipeline and then if not on the pipeline on the project. Use the `Add-ProjectTag.ps1` and `Add-PipelineTag.ps1` to configure tags accordingly.
+
+| Parameter         | Description                                                                                           | Mandatory | Default Value       |
+|-------------------|-------------------------------------------------------------------------------------------------------|-----------|---------------------|
+| `organizations`   | A comma-separated list of organization names that the script will query for agents.                   | Yes       | None                |
+| `pat`             | The Personal Access Token (PAT) used for authentication with the Azure DevOps REST API.               | Yes       | None                |
+| `hostingBasePath` | The base URL for the Azure DevOps instance.                                                           | No        | "https://dev.azure.com" |
+| `outputDirectory` | The folder path where the script will output the summary and detailed reports                         | No        | "./"                |
+| `startDate`       | The date for which job requests against pools will be considered. (Format: yyyy-MM-dd)                | No        | None                |
+| `append`          | Determines whether it appends to the resulting reports or overwrites them.                            | No        | None                |
+| `tagName`         | The name of the tag that will be used to aggregate usage statistics                                   | No        | None                |
+
+```
+.\Get-Agents.ps1 `
+  -organizations "org1,org2,org3" `
+  -pat "yourPAT" `
+  -hostingBasePath "https://dev.azure.com" `
+  -outputPath "./reports" `
+  -startDate "2023-12-05"
+  -tagName "Billing"
 ```
 
 ### `Add-PipelineTag`
@@ -44,7 +77,8 @@ This script adds a tag to a specific Azure DevOps pipeline.
   -projectName "yourProject" `
   -pipelinePath "yourPath" `
   -pipelineName "yourPipeline" `
-  -tag "yourTag"
+  -tagName "Billing" `
+  -tagValue "SomeCostCenter"
 ```
 ### `Add-ProjectTag`
 This script adds a tag to a specific Azure DevOps Project.
@@ -62,8 +96,8 @@ This script adds a tag to a specific Azure DevOps Project.
   -orgName "yourOrg" `
   -pat "yourPAT" `
   -projectName "yourProject" `
-  -tagName "yourTag" `
-  -tagValue "yourValue"
+  -tagName "Billing" `
+  -tagValue "SomeCostCenter"
 ```
 
 ### Get-PipelinesTasksReport

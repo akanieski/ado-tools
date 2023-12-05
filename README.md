@@ -24,14 +24,10 @@ This script queries Azure DevOps for agent details across multiple organizations
   -outputPath "agents.csv" `
   -capabilities "Agent.ComputerName,NUMBER_OF_CORES"
 ```
-#### Results - Summary
-| Org          | Pool            | Tag                 | TotalSeconds | StartDate  |
-|--------------|-----------------|---------------------|--------------|------------|
-| my-org       | Azure Pipelines | WebOpsCostCenter    | 361.3697018  | 2023-09-01 |
-| my-org       | Azure Pipelines | No Tags             | 1103.4578506 | 2023-09-01 |
-| my-org       | Azure Pipelines | SomeProjectLevelTag | 113.6678142  | 2023-09-01 |
-| my-org       | Azure Pipelines | SomeTeam            | 23.1124736   | 2023-09-01 |
-| my-org       | My Agents       | SomeTeam            | 56.9592669   | 2023-09-01 |
+**Results**
+| OrgName | AgentName | AgentPool | AgentStatus | AgentVersion | LastActivity | LastPipelineName | Agent.ComputerName | Agent.OS | Agent.OSVersion | USERNAME |
+|---------|-----------|-----------|-------------|--------------|--------------|------------------|-------------------|----------|-----------------|----------|
+| contoso-fdpo | vmss-pool000009 | Custom Managed Windows Agents | offline | 3.225.0 | | | vmss-pool000009 | | | |
 
 ### `Get-AgentPoolUsage`
 This script assesses agent pool usage, collecting the time spent by each job request against the pool and grouping that time based on what tags are present 
@@ -56,6 +52,14 @@ first on the pipeline and then if not on the pipeline on the project. Use the `A
   -startDate "2023-12-05"
   -tagName "Billing"
 ```
+#### Results - Summary
+| Org          | Pool            | Tag                 | TotalSeconds | StartDate  |
+|--------------|-----------------|---------------------|--------------|------------|
+| my-org       | Azure Pipelines | WebOpsCostCenter    | 361.3697018  | 2023-09-01 |
+| my-org       | Azure Pipelines | No Tags             | 1103.4578506 | 2023-09-01 |
+| my-org       | Azure Pipelines | SomeProjectLevelTag | 113.6678142  | 2023-09-01 |
+| my-org       | Azure Pipelines | SomeTeam            | 23.1124736   | 2023-09-01 |
+| my-org       | My Agents       | SomeTeam            | 56.9592669   | 2023-09-01 |
 
 ### `Add-PipelineTag`
 This script adds a tag to a specific Azure DevOps pipeline.
@@ -101,21 +105,22 @@ This script adds a tag to a specific Azure DevOps Project.
 ```
 
 ### Get-PipelinesTasksReport
-This PowerShell script fetches the list of pipelines from an Azure DevOps organization and generates a report in CSV format.
-
-## Parameters
-
+This PowerShell script fetches the list of classic pipelines from an Azure DevOps organization and generates a report in CSV format.
 
 | Parameter        | Description                                                                                           | Mandatory | Default Value       |
 |------------------|-------------------------------------------------------------------------------------------------------|-----------|---------------------|
 | `orgName`        | The organization url                                                                                  | Yes       | None                |
 | `pat`            | The Personal Access Token (PAT) used for authentication with the Azure DevOps REST API.               | Yes       | None                |
 
-## Usage
 
 ```powershell
 .\Get-PipelinesTasksReport.ps1 -OrganizationUrl "https://dev.azure.com/myorg" -PAT "mypat"
 ```
+
+#### Results
+| Id | Name | Revision | Folder | ProjectName | ConfigurationType | DotNetCoreCLI | AzureCLI |
+|----|------|----------|--------|-------------|-------------------|---------------|----------|
+| 11 | Sample Classic Pipeline | 2 | \ | devops-demos | Classic | Y | N |
 
 ## Usage
 

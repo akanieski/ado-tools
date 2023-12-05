@@ -34,7 +34,8 @@ This script adds a tag to a specific Azure DevOps pipeline.
 | `projectName`    | The name of the project that contains the pipeline.                                                   | Yes       | None                |
 | `pipelinePath`   | The path to the pipeline within the project.                                                          | Yes       | None                |
 | `pipelineName`   | The name of the pipeline to which the tag will be added.                                              | Yes       | None                |
-| `tag`            | The tag that will be added to the pipeline.                                                           | Yes       | None                |
+| `tagName`        | The name of the tag that will be added to the pipeline.                                               | Yes       | None                |
+| `tagValue`       | The value of the tag that will be added to the pipeline.                                              | Yes       | None                |
 
 ```
 .\Add-PipelineTag.ps1 `
@@ -44,6 +45,25 @@ This script adds a tag to a specific Azure DevOps pipeline.
   -pipelinePath "yourPath" `
   -pipelineName "yourPipeline" `
   -tag "yourTag"
+```
+### `Add-ProjectTag`
+This script adds a tag to a specific Azure DevOps Project.
+
+| Parameter        | Description                                                                                           | Mandatory | Default Value       |
+|------------------|-------------------------------------------------------------------------------------------------------|-----------|---------------------|
+| `orgName`        | The name of the organization that contains the pipeline.                                              | Yes       | None                |
+| `pat`            | The Personal Access Token (PAT) used for authentication with the Azure DevOps REST API.               | Yes       | None                |
+| `projectName`    | The name of the project that contains the pipeline.                                                   | Yes       | None                |
+| `tagName`        | The name of the tag that will be added to the pipeline.                                               | Yes       | None                |
+| `tagValue`       | The value of the tag that will be added to the pipeline.                                              | Yes       | None                |
+
+```
+.\Add-ProjectTag.ps1 `
+  -orgName "yourOrg" `
+  -pat "yourPAT" `
+  -projectName "yourProject" `
+  -tagName "yourTag" `
+  -tagValue "yourValue"
 ```
 
 ### Get-PipelinesTasksReport

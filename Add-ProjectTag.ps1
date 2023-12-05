@@ -17,12 +17,6 @@ param(
     [Parameter(Mandatory=$false)]
     [string]$hostingBasePath = "https://dev.azure.com",
 
-    [Parameter(Mandatory=$false)]
-    [string]$pipelinePath = (Read-Host -Prompt 'Input your pipeline path'),
-
-    [Parameter(Mandatory=$false)]
-    [string]$pipelineName,
-
     [Parameter(Mandatory=$true)]
     [string]$tagValue = (Read-Host -Prompt 'Input your desired tag value'),
 
@@ -35,13 +29,6 @@ param(
 
 # Ensure $hostingBasePath does not end with a "/"
 $hostingBasePath = $hostingBasePath.TrimEnd('/')
-$orgList = $organizations.Split(',', [System.StringSplitOptions]::RemoveEmptyEntries)
-
-if ($hostingBasePath -like 'dev.azure.com') {
-    $analyticsBasePath = "https://analytics.dev.azure.com"
-} else {
-    $analyticsBasePath = $hostingBasePath
-}
 
 # Define the Azure DevOps organization URL, PAT, and API version
 $organizationUrl = "$hostingBasePath/$orgName"
@@ -53,22 +40,30 @@ $headers = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
 
 
 # Send a GET request to the Azure DevOps REST API to get all agent pools
-$pipelinesUrl = "$organizationUrl/$projectName/_apis/build/definitions?path=$pipelinePath&name=$pipelineName"
+$projectsUrl = "$organizationUrl/_apis/projects"
 
-$pipelinesResponse = Invoke-RestMethod -Uri $pipelinesUrl -Method Get -ContentType "application/json" -Headers $headers
+$projectsResponse = Invoke-RestMethod -Uri $projectsUrl -Method Get -ContentType "application/json" -Headers $headers
 
-if ($false -eq $force) {
-    $confirm = Read-Host -Prompt "Are you sure you want to tag $($pipelinesResponse.count) pipelines with tag [$($tagName): $tagValue]? (y/n)"
+$project = $projectsResponse.value | Where-Object { $_.name -eq $projectName }
+
+if ($null -eq $project) {
+    Write-Host "Project $projectName not found"
+    exit
+} else {
+    $confirm = Read-Host -Prompt "Are you sure you want to tag project [$projectName] with tag [$($tagName): $tagValue]? (y/n)"
     if ($confirm -ne "y") {
         exit
     }
 }
 
-foreach ($pipeline in $pipelinesResponse.value) {
-    
-    # Get Pipeline Runs in the given date range
-    $updateUrl = "$($pipeline._links.self.href.Split('?')[0])/tags?api-version=7.1-preview.3"
-    $body = "[`"$($tagName): $tagValue`"]"
-    $result = Invoke-RestMethod -Uri $updateUrl -Method POST -ContentType "application/json" -Headers $headers -Body $body
-    Write-Host "Pipeline $pipelineName updated with tag $($tagName): $tagValue"
-}
+$body = "[$(@{
+      "op" = "add"
+      "path" = "/$tagName"
+      "value" = $tagValue
+    } | ConvertTo-Json -Depth 10)]"
+
+Invoke-RestMethod -Uri "$($project.url)/properties?api-version=7.2-preview.1" `
+    -Method Patch `
+    -ContentType "application/json-patch+json" `
+    -Headers $headers `
+    -Body $body
